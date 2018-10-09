@@ -23,6 +23,9 @@ router.post('/c2b_pay', function (req, res) {
     }
     price=req.body.price;
     mobilenum=req.body.mobilenum;
+    console.log('start');
+    console.log('price:'+price);
+    console.log('start'+mobilenum);
     var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     var auth = "Basic " + new Buffer(consumer_key + ":" + consumer_secret).toString("base64");
 
