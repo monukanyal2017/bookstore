@@ -85,11 +85,7 @@ router.post('/c2b_pay', function (req, res) {
                                     console.log(body);
                                     if(response.statusCode==200)
                                     {
-                                        UserPayment.findOneAndUpdate({ Transaction_id: req.body.Result.TransactionID }, { 'ReceivedAmount': req.body.Result.ResultParameters.ResultParameter[0].Value, 'Receiver_msisdn': Msisdn }, { upsert: true }, function (err, doc) {
-                                            if (err) {
-                                                console.log(err.message);;
-                                            } else { console.log("succesfully inserted"); }
-                                        });
+                                       
                                         res.json({error:false,result:body,text:'payment done'});
                                     }
                                     else
