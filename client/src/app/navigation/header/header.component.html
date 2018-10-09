@@ -9,7 +9,7 @@
   </div>
   <div fxFlex fxLayout fxLayoutAlign="flex-end">
       <ul fxLayout fxLayoutGap="10px" class="navigation-items">
-      <li *ngIf="isAuth">
+      <li>
           <a routerLink="/cart"> <mat-icon matBadge="{{cartarr?.length}}" matBadgeColor="warn">shopping_cart</mat-icon></a>
       </li>
       </ul>
