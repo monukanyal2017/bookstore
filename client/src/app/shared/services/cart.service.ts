@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import * as moment from 'moment';
 import 'rxjs/add/operator/do';
 import { throwError, Subject } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Cartarr } from '../model/cart.model';
 import { MatSnackBar } from '@angular/material';
@@ -45,7 +44,7 @@ export class CartService {
         this.openSnackBar('Removed From Cart', null);
         this.reflectchanges();
     }
-    
+
     reflectchanges() {
         this.cartChange.next(this.cartarr);
     }
@@ -59,12 +58,12 @@ export class CartService {
         return this.cartarr;
     }
 
-    get_cart_finalprice(){
+    get_cart_finalprice() {
         return this.cartarr.map(t => t.cartprice).reduce((acc, value) => acc + value, 0);
     }
 
-    clear_cart(){
-        this.cartarr=[];
+    clear_cart() {
+        this.cartarr = [];
         this.cartChange.next(this.cartarr);
     }
 }

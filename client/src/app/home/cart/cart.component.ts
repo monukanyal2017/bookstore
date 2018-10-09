@@ -84,32 +84,38 @@ export class CartComponent implements OnInit {
 
   paynow(stepper: MatStepper) {
    
-    if((this.secondFormGroup.valid==true) && (this.fp>0))
+    if(this.secondFormGroup.valid==true)
     {
-      if(this.authService.isLoggedIn)
+      if(this.fp>0)
       {
-        this.user=JSON.parse(localStorage.getItem('user'));
-
-        this.spinner.show();
-        // console.log(this.secondFormGroup.value);
-        this.Payservice.paynow(this.Cartservice.getcartlist(),this.fp,this.secondFormGroup.value.mobnum,this.user._id).subscribe((res)=>{
-          console.log('pay response'+res);
-          this.spinner.hide();
-          this.payresponse=res.result;
-          this.openSnackBar(res.text,null);
-          setTimeout(()=>{
-            this.thirdbox=true;
-            stepper.next();
-          },2000);
-        
-        },(err)=>{
-          console.log('pay error'+err);
+        if(this.authService.isLoggedIn)
+        {
+          this.user=JSON.parse(localStorage.getItem('user'));
+          this.spinner.show();
+          // console.log(this.secondFormGroup.value);
+          this.Payservice.paynow(this.Cartservice.getcartlist(),this.fp,this.secondFormGroup.value.mobnum,this.user._id).subscribe((res)=>{
+            console.log('pay response'+res);
+            this.spinner.hide();
+            this.payresponse=res.result;
+            this.openSnackBar(res.text,null);
+            setTimeout(()=>{
+              this.thirdbox=true;
+              stepper.next();
+            },2000);
           
-        })
+          },(err)=>{
+            console.log('pay error'+err);
+            
+          })
+        }
+        else
+        {
+          this.openSnackBar('Please login first',null);
+        }
       }
       else
       {
-        this.openSnackBar('Please login first',null);
+        this.openSnackBar('Cart is empty!!',null);
       }
     }
     else
