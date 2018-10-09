@@ -29,6 +29,8 @@ import { CartComponent } from './home/cart/cart.component';
 import { CartService } from './shared/services/cart.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { PayService } from './shared/services/pay.service';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -56,7 +58,8 @@ import { PayService } from './shared/services/pay.service';
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
 
   ],
   entryComponents: [Dialogbox],
