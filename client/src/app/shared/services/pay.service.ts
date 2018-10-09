@@ -14,10 +14,10 @@ export class PayService {
     constructor(private http: HttpClient, private router: Router) { 
 
     }
-    paynow(productlist,price,mobilenum){
+    paynow(productlist,price,mobilenum,user_id){
         console.log('price:'+price);
         console.log('mobilenum:'+mobilenum);
-        let data = 'price=' +price + '&mobilenum=' + mobilenum;
+        let data = 'productlist='+productlist+'&price=' +price + '&mobilenum=' + mobilenum+'&user_id='+user_id;
         let header = new HttpHeaders().set('content-type', 'application/x-www-form-urlencoded').append('Access-Control-Allow-Origin', '*');
         return this.http.post<any>('/api/mpesa/c2b_pay',data, { observe: 'response', responseType: 'json', headers: header }).pipe(map((res) => { console.log(res.body); return res.body; }));
        // return this.http.get<any>('https://glacial-harbor-87888.herokuapp.com/api/mpesa/', { observe: 'response', responseType: 'json', headers: header }).pipe(map((res) => { console.log(res.body); return res.body; }));

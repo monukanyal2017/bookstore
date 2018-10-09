@@ -6,7 +6,7 @@ var request = require('request'),
 var oauth_token;
 var nanoid = require('nanoid');
 var UserPayment = require('../Models/User_payment.js'); //including model
-
+var prettyjson=require('prettyjson');
 //for api
 
 /***********
@@ -22,9 +22,8 @@ router.post('/c2b_pay', function (req, res) {
     }
     var price = req.body.price;
     var mobilenum = req.body.mobilenum;
-    console.log('start');
-    console.log('price:' + price);
-    console.log('start' + mobilenum);
+    var user_id = req.body.user_id;
+    var productlist = req.body.productlist;
     var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     var auth = "Basic " + new Buffer(consumer_key + ":" + consumer_secret).toString("base64");
 
@@ -84,7 +83,19 @@ router.post('/c2b_pay', function (req, res) {
                                     console.log(parseInt(price));
                                     // TODO: Use the body object to extract the response
                                     console.log(body);
-                                    res.json(body);
+                                    if(response.statusCode==200)
+                                    {
+                                        UserPayment.findOneAndUpdate({ Transaction_id: req.body.Result.TransactionID }, { 'ReceivedAmount': req.body.Result.ResultParameters.ResultParameter[0].Value, 'Receiver_msisdn': Msisdn }, { upsert: true }, function (err, doc) {
+                                            if (err) {
+                                                console.log(err.message);;
+                                            } else { console.log("succesfully inserted"); }
+                                        });
+                                        res.json({error:false,result:body,text:'payment done'});
+                                    }
+                                    else
+                                    {
+                                        res.json({error:true,result:body,text:'Something is wrong,try again later!!'});
+                                    }
                                 }
                             )
                         }
@@ -99,7 +110,11 @@ router.post('/c2b_pay', function (req, res) {
 
 
 });
-router.get('/validation_url', function (req, res) {
+router.post('/validation_url', function (req, res) {
+    console.log('-----------C2B VALIDATION REQUEST-----------');
+    console.log(prettyjson.render(req.body, options));
+    console.log('-----------------------');
+  
     console.log(req.query);
     if (req.query.token) {
         res.json({ "ResultCode": 0, "ResultDesc": "Success", "ThirdPartyTransID": 0 });
@@ -111,7 +126,15 @@ router.get('/validation_url', function (req, res) {
 
 router.post('/confirmation', function (req, res) {
     console.log('Confirmation response');
-    console.log(req.body);
+    console.log('-----------C2B CONFIRMATION REQUEST------------');
+    console.log(prettyjson.render(req.body, options));
+    console.log('-----------------------');
+    var message = {
+        "ResultCode": 0,
+        "ResultDesc": "Success"
+      };
+    
+      res.json(message);
 });
 
 /***********
@@ -169,13 +192,20 @@ router.get('/b2c', function (req, res) {
     });
 });
 
-router.get('/b2c/timeout', function (req, res) {
+router.post('/b2c/timeout', function (req, res) {
+    console.log('-----------B2C TIMEOUT------------');
+    console.log(prettyjson.render(req.body, options));
+    console.log('-----------------------');
+  
     res.json({ text: "request timeout,try again later!!" })
 });
 
 
 router.post('/b2c/result', function (req, res) {
-    console.log('result response');
+
+    console.log('-----------B2C CALLBACK------------');
+    console.log(prettyjson.render(req.body, options));
+    console.log('-----------------------');
     console.log(req.body.Result);
 
     var str = req.body.Result.ResultParameters.ResultParameter[4].Value;

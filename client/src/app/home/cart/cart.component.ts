@@ -6,8 +6,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataSource } from '@angular/cdk/collections';
 import { CartDataSource } from '../../shared/class/cartdatasouce';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatStepper } from '@angular/material';
 import { PayService } from '../../shared/services/pay.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-cart',
@@ -24,7 +25,8 @@ export class CartComponent implements OnInit {
   thirdbox: boolean = false;
   dataSource = new CartDataSource(this.Cartservice);
   fp: number;
-
+  user:any;
+  payresponse:any;
   displayedColumns = ['bookcover', 'title', 'quantity', 'price', 'Action'];
 
   constructor(private Cartservice: CartService,
@@ -32,7 +34,8 @@ export class CartComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private changeDetectorRefs: ChangeDetectorRef,
     private spinner: NgxSpinnerService,
-    public snackBar: MatSnackBar) { }
+    public snackBar: MatSnackBar,
+    private authService: AuthService) { }
 
   ngOnInit() {
 
@@ -77,18 +80,32 @@ export class CartComponent implements OnInit {
     });
   }
 
-  paynow() {
+  paynow(stepper: MatStepper) {
    
     if((this.secondFormGroup.valid==true) && (this.fp>0))
     {
-      this.spinner.show();
-      console.log(this.secondFormGroup.value);
-      
-      this.Payservice.paynow(this.Cartservice.getcartlist(),this.fp,this.secondFormGroup.value.mobnum).subscribe((res)=>{
-        console.log('pay response'+res);
-      },(err)=>{
-        console.log('pay error'+err);
-      })
+      if(this.authService.isLoggedIn)
+      {
+        this.user=JSON.parse(localStorage.getItem('user'));
+
+        this.spinner.show();
+        // console.log(this.secondFormGroup.value);
+        this.Payservice.paynow(this.Cartservice.getcartlist(),this.fp,this.secondFormGroup.value.mobnum,this.user._id).subscribe((res)=>{
+          console.log('pay response'+res);
+          this.spinner.hide();
+          this.payresponse=res.result;
+          this.openSnackBar(res.text,null);
+          this.thirdbox=true;
+          stepper.next();
+        },(err)=>{
+          console.log('pay error'+err);
+          
+        })
+      }
+      else
+      {
+        this.openSnackBar('Please login first',null);
+      }
     }
     else
     {

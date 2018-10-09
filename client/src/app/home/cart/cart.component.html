@@ -84,13 +84,23 @@
       <div>
       <!--matStepperNext-->
         <button mat-raised-button matStepperPrevious color="primary">Back</button>
-        <button mat-raised-button  color="accent" (click)="paynow()">Next</button>
+        <button mat-raised-button  color="accent" (click)="paynow(stepper)">Next</button>
       </div>
     </form>
   </mat-step>
   <mat-step [stepControl]="thirdbox">
     <ng-template matStepLabel>Receipt</ng-template>
-    You are now done.
+    <mat-card class="card">
+      <mat-card-header>
+        <mat-card-title>Payment Response</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p *ngIf="payresponse">
+          {{payresponse}}
+        </p>
+      </mat-card-content>
+   
+    </mat-card>
     <div>
       <button mat-raised-button matStepperPrevious color="accent">Back To Home</button>
       <!-- <button mat-button (click)="stepper.reset()">Reset</button> -->
