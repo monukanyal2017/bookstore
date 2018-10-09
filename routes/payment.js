@@ -6,6 +6,8 @@ var request = require('request'),
 var oauth_token;
 var nanoid = require('nanoid');
 var UserPayment = require('../Models/User_payment.js'); //including model
+var price;
+var mobilenum;
 //for api
 
 /***********
@@ -19,6 +21,8 @@ router.post('/c2b_pay', function (req, res) {
     else {
         host = 'http://' + req.headers.host;
     }
+    price=req.body.price;
+    mobilenum=req.body.mobilenum;
     var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     var auth = "Basic " + new Buffer(consumer_key + ":" + consumer_secret).toString("base64");
 
@@ -68,14 +72,14 @@ router.post('/c2b_pay', function (req, res) {
                                     json: {
                                         "ShortCode": "602980",
                                         "CommandID": "CustomerBuyGoodsOnline",
-                                        "Amount": parseInt(req.body.price),
-                                        "Msisdn": req.body.mobilenum,
+                                        "Amount": parseInt(price),
+                                        "Msisdn": mobilenum,
                                         "BillRefNumber": nanoid()
                                     }
                                 },
                                 function (error, response, body) {
-                                    console.log(req.body.price);
-                                    console.log(parseInt(req.body.price));
+                                    console.log(price);
+                                    console.log(parseInt(price));
                                     // TODO: Use the body object to extract the response
                                     console.log(body);
                                     res.json(body);
