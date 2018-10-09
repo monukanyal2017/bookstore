@@ -20,6 +20,7 @@ router.post('/c2b_pay', function (req, res) {
     else {
         host = 'http://' + req.headers.host;
     }
+    console.log('host:'+host);
     var price = req.body.price;
     var mobilenum = req.body.mobilenum;
     var user_id = req.body.user_id;
@@ -129,6 +130,13 @@ router.post('/confirmation', function (req, res) {
         "ResultCode": 0,
         "ResultDesc": "Success"
     };
+    //or
+
+   /* var message = {
+        "ResultCode": 1,
+        "ResultDesc": "Rejected"
+    };
+    */
 
     res.json(message);
 });
