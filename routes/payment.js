@@ -54,7 +54,7 @@ router.post('/c2b_pay', function (req, res) {
                             "ValidationURL": host+"/api/mpesa/validation_url?token=esferaagoodcompany@"
                         }
                     },
-                    function (error, response, body) {
+                     (error, response, body)=>{
                         console.log('register error:', error); // Print the error if one occurred
                         console.log('register statusCode:', response && response.statusCode); // Print the response status code if a response was received
                         console.log('register body:', body); // Print the HTML for the Google homepage
@@ -77,7 +77,7 @@ router.post('/c2b_pay', function (req, res) {
                                         "BillRefNumber": nanoid()
                                     }
                                 },
-                                function (error, response, body) {
+                                 (error, response, body)=>{
                                     console.log(price);
                                     console.log(parseInt(price));
                                     // TODO: Use the body object to extract the response
