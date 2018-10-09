@@ -69,7 +69,7 @@ router.post('/c2b_pay', function (req, res) {
                                         //Fill in the request parameters with valid values
                                         "ShortCode": "602980",
                                         "CommandID": "CustomerBuyGoodsOnline",
-                                        "Amount": req.body.price,
+                                        "Amount": ParseInt(req.body.price),
                                         "Msisdn": req.body.mobilenum,
                                         "BillRefNumber": nanoid()
                                     }
