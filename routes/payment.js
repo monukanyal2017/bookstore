@@ -49,7 +49,7 @@ router.post('/c2b_pay', function (req, res) {
                             "Authorization": "Bearer " + oauth_token
                         },
                         json: {
-                            "ShortCode": "602980",
+                            "ShortCode": "600000",
                             "ResponseType": "Cancelled",
                             "ConfirmationURL": host + "/api/mpesa/confirmation?token=esferaagoodcompany@",
                             "ValidationURL": host + "/api/mpesa/validation_url?token=esferaagoodcompany@"
@@ -71,7 +71,7 @@ router.post('/c2b_pay', function (req, res) {
                                         "Authorization": "Bearer " + oauth_token
                                     },
                                     json: {
-                                        "ShortCode": "602980",
+                                        "ShortCode": "600000",
                                         "CommandID": "CustomerBuyGoodsOnline",
                                         "Amount": parseInt(price),
                                         "Msisdn": mobilenum,
