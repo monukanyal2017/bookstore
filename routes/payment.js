@@ -6,7 +6,7 @@ var request = require('request'),
 var oauth_token;
 var nanoid = require('nanoid');
 var UserPayment = require('../Models/User_payment.js'); //including model
-var prettyjson=require('prettyjson');
+var prettyjson = require('prettyjson');
 //for api
 
 /***********
@@ -83,16 +83,14 @@ router.post('/c2b_pay', function (req, res) {
                                     console.log(parseInt(price));
                                     // TODO: Use the body object to extract the response
                                     console.log(body);
-                                    if(response.statusCode==200)
-                                    {
+                                    if (response.statusCode == 200) {
                                         setTimeout(() => {
-                                            res.json({error:false,result:body,text:'payment done'});
+                                            res.json({ error: false, result: body, text: 'payment done' });
                                         }, 3000);
-                                        
+
                                     }
-                                    else
-                                    {
-                                        res.json({error:true,result:body,text:'Something is wrong,try again later!!'});
+                                    else {
+                                        res.json({ error: true, result: body, text: 'Something is wrong,try again later!!' });
                                     }
                                 }
                             )
@@ -112,7 +110,7 @@ router.post('/validation_url', function (req, res) {
     console.log('-----------C2B VALIDATION REQUEST-----------');
     console.log(prettyjson.render(req.body, options));
     console.log('-----------------------');
-  
+
     console.log(req.query);
     if (req.query.token) {
         res.json({ "ResultCode": 0, "ResultDesc": "Success", "ThirdPartyTransID": 0 });
@@ -130,9 +128,9 @@ router.post('/confirmation', function (req, res) {
     var message = {
         "ResultCode": 0,
         "ResultDesc": "Success"
-      };
-    
-      res.json(message);
+    };
+
+    res.json(message);
 });
 
 /***********
@@ -194,8 +192,13 @@ router.post('/b2c/timeout', function (req, res) {
     console.log('-----------B2C TIMEOUT------------');
     console.log(prettyjson.render(req.body, options));
     console.log('-----------------------');
-  
-    res.json({ text: "request timeout,try again later!!" })
+    var message = {
+        "ResponseCode": "00000000",
+        "ResponseDesc": "success"
+    };
+
+    res.json(message);
+
 });
 
 
@@ -210,8 +213,16 @@ router.post('/b2c/result', function (req, res) {
     var Msisdn = (str.substring(0, str.indexOf("-"))).trim();
     UserPayment.findOneAndUpdate({ Transaction_id: req.body.Result.TransactionID }, { 'ReceivedAmount': req.body.Result.ResultParameters.ResultParameter[0].Value, 'Receiver_msisdn': Msisdn }, { upsert: true }, function (err, doc) {
         if (err) {
-            console.log(err.message);;
-        } else { console.log("succesfully inserted"); }
+            console.log(err.message);
+        } else {
+            console.log("succesfully inserted");
+            var message = {
+                "ResponseCode": "00000000",
+                "ResponseDesc": "success"
+            };
+
+            res.json(message);
+        }
     });
 });
 module.exports = router;
