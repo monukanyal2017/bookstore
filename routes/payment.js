@@ -85,8 +85,10 @@ router.post('/c2b_pay', function (req, res) {
                                     console.log(body);
                                     if(response.statusCode==200)
                                     {
-                                       
-                                        res.json({error:false,result:body,text:'payment done'});
+                                        setTimeout(() => {
+                                            res.json({error:false,result:body,text:'payment done'});
+                                        }, 3000);
+                                        
                                     }
                                     else
                                     {

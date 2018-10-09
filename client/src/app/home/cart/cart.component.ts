@@ -9,6 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MatSnackBar, MatStepper } from '@angular/material';
 import { PayService } from '../../shared/services/pay.service';
 import { AuthService } from '../../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
@@ -35,7 +36,8 @@ export class CartComponent implements OnInit {
     private changeDetectorRefs: ChangeDetectorRef,
     private spinner: NgxSpinnerService,
     public snackBar: MatSnackBar,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private router:Router) { }
 
   ngOnInit() {
 
@@ -95,8 +97,11 @@ export class CartComponent implements OnInit {
           this.spinner.hide();
           this.payresponse=res.result;
           this.openSnackBar(res.text,null);
-          this.thirdbox=true;
-          stepper.next();
+          setTimeout(()=>{
+            this.thirdbox=true;
+            stepper.next();
+          },2000);
+        
         },(err)=>{
           console.log('pay error'+err);
           
@@ -111,5 +116,10 @@ export class CartComponent implements OnInit {
     {
         this.openSnackBar('Please fill shipping details completely',null);
     }
+  }
+
+  back_home(){
+    this.thirdbox=false;
+    this.router.navigate(['/home']);
   }
 }
