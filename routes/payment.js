@@ -66,7 +66,6 @@ router.post('/c2b_pay', function (req, res) {
                                         "Authorization": "Bearer " + oauth_token
                                     },
                                     json: {
-                                        //Fill in the request parameters with valid values
                                         "ShortCode": "602980",
                                         "CommandID": "CustomerBuyGoodsOnline",
                                         "Amount": parseInt(req.body.price),
@@ -75,8 +74,9 @@ router.post('/c2b_pay', function (req, res) {
                                     }
                                 },
                                 function (error, response, body) {
+                                    console.log(parseInt(req.body.price));
                                     // TODO: Use the body object to extract the response
-                                    console.log(body)
+                                    console.log(body);
                                     res.json(body);
                                 }
                             )
