@@ -6,8 +6,7 @@ var request = require('request'),
 var oauth_token;
 var nanoid = require('nanoid');
 var UserPayment = require('../Models/User_payment.js'); //including model
-var price;
-var mobilenum;
+
 //for api
 
 /***********
@@ -21,11 +20,11 @@ router.post('/c2b_pay', function (req, res) {
     else {
         host = 'http://' + req.headers.host;
     }
-    price=req.body.price;
-    mobilenum=req.body.mobilenum;
+    var price = req.body.price;
+    var mobilenum = req.body.mobilenum;
     console.log('start');
-    console.log('price:'+price);
-    console.log('start'+mobilenum);
+    console.log('price:' + price);
+    console.log('start' + mobilenum);
     var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     var auth = "Basic " + new Buffer(consumer_key + ":" + consumer_secret).toString("base64");
 
@@ -53,11 +52,11 @@ router.post('/c2b_pay', function (req, res) {
                         json: {
                             "ShortCode": "602980",
                             "ResponseType": "Cancelled",
-                            "ConfirmationURL": host+"/api/mpesa/confirmation?token=esferaagoodcompany@",
-                            "ValidationURL": host+"/api/mpesa/validation_url?token=esferaagoodcompany@"
+                            "ConfirmationURL": host + "/api/mpesa/confirmation?token=esferaagoodcompany@",
+                            "ValidationURL": host + "/api/mpesa/validation_url?token=esferaagoodcompany@"
                         }
                     },
-                     (error, response, body)=>{
+                    (error, response, body) => {
                         console.log('register error:', error); // Print the error if one occurred
                         console.log('register statusCode:', response && response.statusCode); // Print the response status code if a response was received
                         console.log('register body:', body); // Print the HTML for the Google homepage
@@ -80,7 +79,7 @@ router.post('/c2b_pay', function (req, res) {
                                         "BillRefNumber": nanoid()
                                     }
                                 },
-                                 (error, response, body)=>{
+                                (error, response, body) => {
                                     console.log(price);
                                     console.log(parseInt(price));
                                     // TODO: Use the body object to extract the response
@@ -181,7 +180,7 @@ router.post('/b2c/result', function (req, res) {
 
     var str = req.body.Result.ResultParameters.ResultParameter[4].Value;
     var Msisdn = (str.substring(0, str.indexOf("-"))).trim();
-    UserPayment.findOneAndUpdate({Transaction_id: req.body.Result.TransactionID }, { 'ReceivedAmount': req.body.Result.ResultParameters.ResultParameter[0].Value, 'Receiver_msisdn': Msisdn }, { upsert: true }, function (err, doc) {
+    UserPayment.findOneAndUpdate({ Transaction_id: req.body.Result.TransactionID }, { 'ReceivedAmount': req.body.Result.ResultParameters.ResultParameter[0].Value, 'Receiver_msisdn': Msisdn }, { upsert: true }, function (err, doc) {
         if (err) {
             console.log(err.message);;
         } else { console.log("succesfully inserted"); }
