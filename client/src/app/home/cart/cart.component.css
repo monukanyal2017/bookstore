@@ -1,0 +1,7 @@
+.mat-horizontal-content-container{
+    padding: 0px;
+}
+
+mat-cell{
+    padding: 8px 15px 15px 0px;
+}

@@ -1,0 +1,27 @@
+<div class="home" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap.gt-md="20px" fxLayoutAlign="center center">
+  <section fxFlex="20%">
+    <h2>Latest Books</h2>
+  </section>
+  <section *ngFor="let book of books;let i = index" >
+      <mat-card (click)="openBook()" routerLinkActive="router-link-active" >
+          <img mat-card-image src="{{book.bookcover}}" height="310px" alt="Photo of a book">
+          <mat-card-content>
+            <h2>
+             {{book.title}}
+            </h2>
+          </mat-card-content>
+          <mat-card-actions>
+              <p><strong>{{book.price}}$</strong> 10% OFF</p>
+              <button mat-raised-button color="accent" [disabled]="book.isDisabled" (click)="add_to_cart(book,i)">
+                  <mat-icon>add_shopping_cart</mat-icon>
+                  Add To Cart
+              </button>
+              <button mat-raised-button color="primary">
+                  <mat-icon>mobile_screen_share</mat-icon>
+                  share
+              </button>
+          </mat-card-actions>
+        </mat-card>
+  </section>
+
+</div>

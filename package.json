@@ -1,0 +1,47 @@
+{
+  "name": "meanapp",
+  "version": "1.0.1",
+  "description": "its mean simple app",
+  "main": "app.js",
+  "scripts": {
+    "start": "export NODE_ENV=production || SET NODE_ENV=production && node app.js",
+    "test": "export NODE_ENV=development || SET NODE_ENV=development && node app.js"
+  },
+  "dependencies": {
+    "async": "^2.6.0",
+    "base64-to-image": "^1.0.2",
+    "body-parser": "^1.18.1",
+    "connect-ensure-login": "^0.1.1",
+    "connect-flash": "^0.1.1",
+    "connect-mongo": "^2.0.1",
+    "cookie-parser": "^1.4.3",
+    "debug": "^2.6.1",
+    "dotenv": "^4.0.0",
+    "ejs": "^2.5.7",
+    "ejs-lint": "^0.3.0",
+    "express": "^4.16.1",
+    "express-fileupload": "^0.4.0",
+    "jquery": "^3.3.1",
+    "jsonwebtoken": "^8.1.0",
+    "md5": "^2.2.1",
+    "mongodb": "2.2.33",
+    "mongoose": "^4.13.9",
+    "morgan": "^1.9.1",
+    "mpesa-node-sdk": "^1.0.0",
+    "mv": "^2.1.1",
+    "nanoid": "1.2.3",
+    "node-datetime": "^2.0.6",
+    "path": "^0.12.7",
+    "request": "^2.88.0",
+    "serve-favicon": "^2.4.0",
+    "socket.io": "^2.0.4"
+  },
+  "keywords": [
+    "bookstore"
+  ],
+  "author": "monu kanyal",
+  "license": "ISC",
+  "engines": {
+    "node": "8.0.0"
+  }
+}

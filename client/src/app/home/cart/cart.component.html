@@ -1,0 +1,99 @@
+<mat-horizontal-stepper [linear]="isLinear" #stepper>
+  <mat-step [stepControl]="firstbox">
+
+    <ng-template matStepLabel>Cart Details</ng-template>
+
+    <mat-table [dataSource]="dataSource">
+
+      <ng-container matColumnDef="bookcover">
+        <mat-header-cell *matHeaderCellDef>Item</mat-header-cell>
+        <mat-cell *matCellDef="let cartarr"><img src="{{cartarr.bookcover}}" height="30px" /> </mat-cell>
+        <mat-cell mat-footer-cell *matFooterCellDef> </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef>Title </mat-header-cell>
+        <mat-cell *matCellDef="let cartarr"> {{cartarr.title}}</mat-cell>
+        <mat-cell mat-footer-cell *matFooterCellDef> </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+        <mat-header-cell *matHeaderCellDef>Quantity </mat-header-cell>
+        <mat-cell *matCellDef="let cartarr;let i = index">
+          <input matInput [(ngModel)]="cartarr.quantity" type="number" min=1 (change)="book_quantity_change($event,i)" />
+        </mat-cell>
+        <mat-cell mat-footer-cell *matFooterCellDef> Total </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef> Price </mat-header-cell>
+        <mat-cell *matCellDef="let cartarr"> {{cartarr.cartprice | currency}} </mat-cell>
+        <mat-cell mat-footer-cell *matFooterCellDef> {{getFinalPrice() | currency}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+        <mat-cell *matCellDef="let cartarr;let i=index"><button mat-button (click)="removefrmcart(i)">
+            <mat-icon style="color:brown">remove_circle</mat-icon>
+          </button></mat-cell>
+        <mat-cell mat-footer-cell *matFooterCellDef> </mat-cell>
+      </ng-container>
+
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns; let j = index"></mat-row>
+      <mat-row mat-footer-row *matFooterRowDef="displayedColumns"></mat-row>
+    </mat-table>
+
+    <div>
+      <button mat-raised-button matStepperNext color="accent" [disabled]="fp==0">Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="secondFormGroup">
+    <form [formGroup]="secondFormGroup" fxLayout="column">
+      <ng-template matStepLabel>Payment</ng-template>
+      <h3>Shipping Information</h3>
+      <mat-form-field>
+        <input matInput placeholder="First Name" formControlName="fname" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Last Name" formControlName="lname" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Mobile Number" formControlName="mobnum" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Address" formControlName="address" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="city" formControlName="city" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="state" formControlName="state" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="pincode" formControlName="pincode" required>
+      </mat-form-field>
+    
+      <h3>Payment Method</h3>
+      <mat-radio-group formControlName="method" name="method" fxLayout="column">
+        <mat-radio-button value="mpesa" ><img src="../../../assets/mpesa.jpg" height="40px" width="150px" /></mat-radio-button>
+        <!-- <mat-radio-button value="paypal">NA</mat-radio-button> -->
+      </mat-radio-group>
+      <div>
+      <!--matStepperNext-->
+        <button mat-raised-button matStepperPrevious color="primary">Back</button>
+        <button mat-raised-button  color="accent" (click)="paynow()">Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="thirdbox">
+    <ng-template matStepLabel>Receipt</ng-template>
+    You are now done.
+    <div>
+      <button mat-raised-button matStepperPrevious color="accent">Back To Home</button>
+      <!-- <button mat-button (click)="stepper.reset()">Reset</button> -->
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>
