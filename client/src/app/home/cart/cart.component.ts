@@ -120,6 +120,7 @@ export class CartComponent implements OnInit {
 
   back_home(){
     this.thirdbox=false;
+    this.Cartservice.clear_cart();
     this.router.navigate(['/home']);
   }
 }

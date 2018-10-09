@@ -62,4 +62,9 @@ export class CartService {
     get_cart_finalprice(){
         return this.cartarr.map(t => t.cartprice).reduce((acc, value) => acc + value, 0);
     }
+
+    clear_cart(){
+        this.cartarr=[];
+        this.cartChange.next(this.cartarr);
+    }
 }
