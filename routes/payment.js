@@ -74,6 +74,7 @@ router.post('/c2b_pay', function (req, res) {
                                     }
                                 },
                                 function (error, response, body) {
+                                    console.log(req.body.price);
                                     console.log(parseInt(req.body.price));
                                     // TODO: Use the body object to extract the response
                                     console.log(body);
