@@ -127,7 +127,7 @@ router.post('/c2b_pay', function (req, res) {
         var reg_response = await registerurl(req, oauth_token);
         if (reg_response.error == false) {
             var simulate_c2b_res = await simulate_c2b(req, oauth_token);
-            res.json(simulate_c2b);
+            res.json(simulate_c2b_res);
         }
         else {
             res.json(reg_response);
