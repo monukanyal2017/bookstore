@@ -308,9 +308,9 @@ async function process_request(req, shortcode, passkey, oauth_token) {
                     "Timestamp": moment().format('YYYYMMDDHHmmss'),
                     "TransactionType": "CustomerPayBillOnline",
                     "Amount": parseInt(req.body.price),
-                    "PartyA": req.body.mobilenum,
+                    "PartyA": req.body.Msisdn,
                     "PartyB": shortcode,
-                    "PhoneNumber": req.body.mobilenum,
+                    "PhoneNumber": req.body.Msisdn,
                     "CallBackURL": host + "/api/pay/process_callback",
                     "AccountReference": "ref test",
                     "TransactionDesc": "product purchase"
