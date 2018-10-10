@@ -11,6 +11,7 @@ var b2c_response;
 var nanoid = require('nanoid');
 var moment = require('moment');
 var UserPayment = require('../Models/User_payment.js'); //including model
+var User = require('../Models/user.js'); //including model
 var prettyjson = require('prettyjson');
 var async = require('async');
 // console.log(moment().format('YYYYMMDDHHmmss'));
@@ -317,10 +318,10 @@ async function process_request(req, shortcode, passkey, oauth_token) {
             function (error, response, body) {
                 // TODO: Use the body object to extract the response
                 if (response.statusCode == 200) {
-                    resolve({ error: false, result:body, text: `${body.ResponseDescription}. Please check your phone ${req.body.mobilenum} and enter your M-PESA PIN to finish the process!` });
+                    resolve({ error: false, result: body, text: `${body.ResponseDescription}. Please check your phone ${req.body.mobilenum} and enter your M-PESA PIN to finish the process!` });
                 }
                 else {
-                    reject({ error: true, result:body, text: body.ResponseDescription });
+                    reject({ error: true, result: body, text: body.ResponseDescription });
                 }
             });
 
@@ -332,13 +333,17 @@ router.post('/customer_pay', async (req, res) => {
         console.log('oauth_token:' + oauth_token);
         pcs_response = await process_request(req, shortcode, passkey, oauth_token);
         if (pcs_response.error == false) {
-
-            UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'pending', 'ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum,order_detail:req.body.productlist }, { upsert: true }, function (err, doc) {
+            UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'pending', 'ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum, order_detail: req.body.productlist }, { upsert: true }, function (err, doc) {
                 if (err) {
                     console.log(err.message);
                     res.json({ error: true, result: err, text: err.message });
                 } else {
-                    res.json(pcs_response);
+                    console.log('doc info');
+                    console.log(doc);
+                    User.update({ mob: req.body.mobilenum }, { $push: { UserPayment: doc } }, (err) => {
+                        console.log('update user tbl' + err);
+                        res.json(pcs_response);
+                    });
                 }
             });
             //checkoutresponse id store them
@@ -361,7 +366,7 @@ router.post('/process_callback', async (req, res) => {
         UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'failed' }, { upsert: true }, function (err, doc) {
             if (err) {
                 console.log(err.message);
-               
+
             } else {
                 console.log('record updated err');
             }
@@ -374,7 +379,7 @@ router.post('/process_callback', async (req, res) => {
         UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'success' }, { upsert: true }, function (err, doc) {
             if (err) {
                 console.log(err.message);
-              
+
             } else {
                 console.log('record updated success');
             }
