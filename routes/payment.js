@@ -5,46 +5,46 @@ var request = require('request'),
     consumer_secret = "v5InjE47xUSWUdBI";
 var oauth_token;
 var reg_response;
+var b2c_response;
 var nanoid = require('nanoid');
 var UserPayment = require('../Models/User_payment.js'); //including model
 var prettyjson = require('prettyjson');
-var async=require('async');
-//for api
+var async = require('async');
+
 
 /***********
  * C2B API *
  ***********/
-
 async function get_accesstoken(consumer_key, consumer_secret) {
     var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     var auth = "Basic " + new Buffer(consumer_key + ":" + consumer_secret).toString("base64");
-    return new Promise((resolve, reject)=>{
-    request(
-        {
-            url: url,
-            headers: {
-                "Authorization": auth
-            }
-        },
-        function (error, response, body) {
-            if (response.statusCode == 200) {
-                var result = JSON.parse(body);
-                console.log('auth error:', error); // Print the error if one occurred
-                console.log('auth statusCode:', response && response.statusCode); // Print the response status code if a response was received
-                console.log('auth body:', result); // Print the HTML for the Google homepage
-                oauth_token=result.access_token;
-                //return oauth_token;
-                resolve(oauth_token);
-            }
-            else {
-               // return '';
-                reject('');
-            }
-        });
+    return new Promise((resolve, reject) => {
+        request(
+            {
+                url: url,
+                headers: {
+                    "Authorization": auth
+                }
+            },
+            function (error, response, body) {
+                if (response.statusCode == 200) {
+                    var result = JSON.parse(body);
+                    console.log('auth error:', error); // Print the error if one occurred
+                    console.log('auth statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                    console.log('auth body:', result); // Print the HTML for the Google homepage
+                    oauth_token = result.access_token;
+                    //return oauth_token;
+                    resolve(oauth_token);
+                }
+                else {
+                    // return '';
+                    reject('');
+                }
+            });
     });
 }
 
- async function registerurl(req, oauth_token) {
+async function registerurl(req, oauth_token) {
     var host;
     if (req.secure == true) {
         host = 'https://' + req.headers.host;
@@ -53,86 +53,86 @@ async function get_accesstoken(consumer_key, consumer_secret) {
         host = 'http://' + req.headers.host;
     }
     console.log('host:' + host);
-    return new Promise((resolve, reject)=>{
-     request(
-        {
-            method: 'POST',
-            url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl",
-            headers: {
-                "Authorization": "Bearer " + oauth_token
+    return new Promise((resolve, reject) => {
+        request(
+            {
+                method: 'POST',
+                url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl",
+                headers: {
+                    "Authorization": "Bearer " + oauth_token
+                },
+                json: {
+                    "ShortCode": "602980",
+                    "ResponseType": "Cancelled",
+                    "ConfirmationURL": host + "/api/pay/confirmation?token=esferaagoodcompany@",
+                    "ValidationURL": host + "/api/pay/validation_url?token=esferaagoodcompany@"
+                }
             },
-            json: {
-                "ShortCode": "602980",
-                "ResponseType": "Cancelled",
-                "ConfirmationURL": host + "/api/pay/confirmation?token=esferaagoodcompany@",
-                "ValidationURL": host + "/api/pay/validation_url?token=esferaagoodcompany@"
-            }
-        },
-        (error, response, body) => {
-            console.log('register error:', error); // Print the error if one occurred
-            console.log('register statusCode:', response && response.statusCode); // Print the response status code if a response was received
-            console.log('register body:', body); // Print the HTML for the Google homepage
-            if (response.statusCode == 200) {
-                /* 
-                    {"ConversationID":"","OriginatorCoversationID":"","ResponseDescription":"success"}
-                */
-                console.log({ error: false, result: body });
-                resolve({ error: false, result: body });
-            }
-            else {
-                console.log({ error: true, result: body });
-                reject({ error: true, result: body });
+            (error, response, body) => {
+                console.log('register error:', error); // Print the error if one occurred
+                console.log('register statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                console.log('register body:', body); // Print the HTML for the Google homepage
+                if (response.statusCode == 200) {
+                    /* 
+                        {"ConversationID":"","OriginatorCoversationID":"","ResponseDescription":"success"}
+                    */
+                    console.log({ error: false, result: body });
+                    resolve({ error: false, result: body });
+                }
+                else {
+                    console.log({ error: true, result: body });
+                    reject({ error: true, result: body });
 
-            }
-        });
+                }
+            });
 
     });
 }
 
- async function simulate_c2b(req, oauth_token) {
+async function simulate_c2b(req, oauth_token) {
     var price = req.body.price;
     var mobilenum = req.body.mobilenum;
     var user_id = req.body.user_id;
     var productlist = req.body.productlist;
-    return new Promise((resolve, reject)=>{
-     request(
-        {
-            method: 'POST',
-            url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate",
-            headers: {
-                "Authorization": "Bearer " + oauth_token
+    return new Promise((resolve, reject) => {
+        request(
+            {
+                method: 'POST',
+                url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate",
+                headers: {
+                    "Authorization": "Bearer " + oauth_token
+                },
+                json: {
+                    "ShortCode": "602980",
+                    "CommandID": "CustomerBuyGoodsOnline",
+                    "Amount": parseInt(price),
+                    "Msisdn": mobilenum,
+                    "BillRefNumber": nanoid()
+                }
             },
-            json: {
-                "ShortCode": "602980",
-                "CommandID": "CustomerBuyGoodsOnline",
-                "Amount": parseInt(price),
-                "Msisdn": mobilenum,
-                "BillRefNumber": nanoid()
-            }
-        },
-        (error, response, body) => {
-            console.log(price);
-            console.log(parseInt(price));
-            console.log(body);
-            if (response.statusCode == 200) {
+            (error, response, body) => {
+                console.log(price);
+                console.log(parseInt(price));
+                console.log(body);
+                if (response.statusCode == 200) {
 
-                setTimeout(() => {
-                    console.log({ error: false, result: body, text: 'payment done' });
-                    resolve({ error: false, result: body, text: 'payment done' });
-                }, 2000);
+                    setTimeout(() => {
+                        console.log({ error: false, result: body, text: 'payment done' });
+                        resolve({ error: false, result: body, text: 'payment done' });
+                    }, 2000);
 
-            }
-            else {
-                console.log({ error: true, result: body, text: 'Something is wrong,try again later!!' });
-                reject({ error: true, result: body, text: 'Something is wrong,try again later!!' });
-            }
-        });
+                }
+                else {
+                    console.log({ error: true, result: body, text: 'Something is wrong,try again later!!' });
+                    reject({ error: true, result: body, text: 'Something is wrong,try again later!!' });
+                }
+            });
     });
 }
-router.post('/c2b_pay', async (req, res)=>{
+router.post('/c2b_pay', async (req, res) => {
     oauth_token = await get_accesstoken(consumer_key, consumer_secret);
     if (oauth_token != '') {
-        console.log('oauth_token:'+oauth_token);
+        console.log('oauth_token:' + oauth_token);
         reg_response = await registerurl(req, oauth_token);
         if (reg_response.error == false) {
             var simulate_c2b_res = await simulate_c2b(req, oauth_token);
@@ -145,8 +145,8 @@ router.post('/c2b_pay', async (req, res)=>{
     else {
         res.json({ error: true, result: 'authorization failed' });
     }
-
 });
+
 router.post('/validation_url', function (req, res) {
     console.log('-----------C2B VALIDATION REQUEST-----------');
     console.log(prettyjson.render(req.body, options));
@@ -185,8 +185,7 @@ router.post('/confirmation', function (req, res) {
 /***********
  * B2C API *
  ***********/
-
-router.get('/b2c', function (req, res) {
+async function b2c_payment(req, oauth_token) {
     var host;
     if (req.secure == true) {
         host = 'https://' + req.headers.host;
@@ -194,47 +193,52 @@ router.get('/b2c', function (req, res) {
     else {
         host = 'http://' + req.headers.host;
     }
-    var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
-    var auth = "Basic " + new Buffer(consumer_key + ":" + consumer_secret).toString("base64");
-    request({ url: url, headers: { "Authorization": auth } }, (error, response, body) => {
-        if (response.statusCode == 200) {
-            var result = JSON.parse(body);
-            console.log('auth error:', error); // Print the error if one occurred
-            console.log('auth statusCode:', response && response.statusCode); // Print the response status code if a response was received
-            console.log('auth body:', result); // Print the HTML for the Google homepage
-            oauth_token = result.access_token;
-
-            //creating b2c transaction
-            request(
-                {
-                    method: "POST",
-                    url: "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest",
-                    headers: {
-                        "Authorization": "Bearer " + oauth_token
-                    },
-                    json: {
-                        "InitiatorName": "apiop56",
-                        "SecurityCredential": "Kepob5AfIncmsjDvmtNDZpfswbpc1SvX7r4SE/bR1DFncOWaGQF89TZwNIlr3ubvgIxUWqzQuHK6UE1G5+ta6f1oUhupLnPJuSmrqYHNppcS46K/CQ+Fmw3YjX8fm7fq4Dei+SmdVYpJcvS59g386nVfhPJIpopCe2iDCibnmAHncKpYUISB5JmMfJx9KLRNsZ4pCNxSHaq6aWQxjZ/1GOmA2iSSfiBphgEptt/pUMh7dwrhtUu5dfsaUMqpXgvzCdEi6o7nvIi8sm8nrJoCnXQe3lTpFz+xZkvVvdMR9n53coAL2G6Hz4iiFrXLRQitoDoXQggALoU2IibrdtQUtQ==",
-                        "CommandID": "BusinessPayment",
-                        "Amount": "20",
-                        "PartyA": "602980",
-                        "PartyB": "254708374149",
-                        "Remarks": "Your bonus",
-                        "QueueTimeOutURL": host + "/api/pay/b2c/timeout",
-                        "ResultURL": host + "/api/pay/b2c/result",
-                        "Occasion": "NA"
-                    }
-                }, function (error2, response2, body2) {
-                    console.log('b2c payment response');
-                    console.log(body2);
+    return new Promise((resolve, reject) => {
+        //creating b2c transaction
+        request(
+            {
+                method: "POST",
+                url: "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest",
+                headers: {
+                    "Authorization": "Bearer " + oauth_token
+                },
+                json: {
+                    "InitiatorName": "apiop56",
+                    "SecurityCredential": "Kepob5AfIncmsjDvmtNDZpfswbpc1SvX7r4SE/bR1DFncOWaGQF89TZwNIlr3ubvgIxUWqzQuHK6UE1G5+ta6f1oUhupLnPJuSmrqYHNppcS46K/CQ+Fmw3YjX8fm7fq4Dei+SmdVYpJcvS59g386nVfhPJIpopCe2iDCibnmAHncKpYUISB5JmMfJx9KLRNsZ4pCNxSHaq6aWQxjZ/1GOmA2iSSfiBphgEptt/pUMh7dwrhtUu5dfsaUMqpXgvzCdEi6o7nvIi8sm8nrJoCnXQe3lTpFz+xZkvVvdMR9n53coAL2G6Hz4iiFrXLRQitoDoXQggALoU2IibrdtQUtQ==",
+                    "CommandID": "BusinessPayment",
+                    "Amount": "20",
+                    "PartyA": "602980",
+                    "PartyB": "254708374149",
+                    "Remarks": "Your reimbursement",
+                    "QueueTimeOutURL": host + "/api/pay/b2c/timeout",
+                    "ResultURL": host + "/api/pay/b2c/result",
+                    "Occasion": "NA"
+                }
+            }, function (error2, response2, body2) {
+                console.log('b2c payment response');
+                console.log(body2);
+                if (response2.statusCode == 200) {
                     setTimeout(() => {
-                        res.send(body2);
+                        resolve(body2);
                     }, 8000);
-
-
-                });
-        }
+                }
+                else {
+                    reject(body2);
+                }
+            });
     });
+}
+router.get('/b2c', function (req, res) {
+
+    oauth_token = await get_accesstoken(consumer_key, consumer_secret);
+    if (oauth_token != '') {
+        console.log('oauth_token:' + oauth_token);
+        b2c_response = await b2c_payment(req, oauth_token);
+        res.json(b2c_response);
+    }
+    else {
+        res.json({ error: true, result: 'authorization failed' });
+    }
 });
 
 router.post('/b2c/timeout', function (req, res) {
@@ -245,14 +249,11 @@ router.post('/b2c/timeout', function (req, res) {
         "ResponseCode": "00000000",
         "ResponseDesc": "success"
     };
-
     res.json(message);
-
 });
 
 
 router.post('/b2c/result', function (req, res) {
-
     console.log('-----------B2C CALLBACK------------');
     console.log(prettyjson.render(req.body, options));
     console.log('-----------------------');
