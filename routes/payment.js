@@ -333,19 +333,37 @@ router.post('/customer_pay', async (req, res) => {
         console.log('oauth_token:' + oauth_token);
         pcs_response = await process_request(req, shortcode, passkey, oauth_token);
         if (pcs_response.error == false) {
-            UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'pending', 'ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum, order_detail: req.body.productlist }, { upsert: true }, function (err, doc) {
-                if (err) {
-                    console.log(err.message);
-                    res.json({ error: true, result: err, text: err.message });
-                } else {
-                    console.log('doc info');
-                    console.log(doc);
-                    User.update({ mob: req.body.mobilenum }, { $push: { UserPayment: doc } }, (err) => {
-                        console.log('update user tbl' + err);
-                        res.json(pcs_response);
-                    });
-                }
+            
+            var orderpayment = new UserPayment();
+            orderpayment.Transaction_id = pcs_response.result.CheckoutRequestID;
+            orderpayment.paymentstatus = 'pending';
+            orderpayment.ReceivedAmount = req.body.price;
+            orderpayment.Receiver_msisdn = req.body.mobilenum;
+            orderpayment.order_detail = req.body.productlist;
+            orderpayment.save().then((results) => {
+                console.log('doc info');
+                console.log(results);
+                User.update({ mob: req.body.mobilenum }, { $push: { UserPayment: results } }, (err) => {
+                    console.log('update user tbl' + err);
+                    res.json(pcs_response);
+                });
+            }).catch((err) => {
+                console.log(err.message);
+                res.json({ error: true, result: err, text: err.message });
             });
+            // UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'pending', 'ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum, order_detail: req.body.productlist }, { upsert: true }, function (err, doc) {
+            //     if (err) {
+            //         console.log(err.message);
+            //         res.json({ error: true, result: err, text: err.message });
+            //     } else {
+            //         console.log('doc info');
+            //         console.log(doc);
+            //         User.update({ mob: req.body.mobilenum }, { $push: { UserPayment: doc } }, (err) => {
+            //             console.log('update user tbl' + err);
+            //             res.json(pcs_response);
+            //         });
+            //     }
+            // });
             //checkoutresponse id store them
         }
         else {
