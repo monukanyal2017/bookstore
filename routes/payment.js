@@ -12,19 +12,8 @@ var prettyjson = require('prettyjson');
 /***********
  * C2B API *
  ***********/
-router.post('/c2b_pay', function (req, res) {
-    var host;
-    if (req.secure == true) {
-        host = 'https://' + req.headers.host;
-    }
-    else {
-        host = 'http://' + req.headers.host;
-    }
-    console.log('host:' + host);
-    var price = req.body.price;
-    var mobilenum = req.body.mobilenum;
-    var user_id = req.body.user_id;
-    var productlist = req.body.productlist;
+
+function get_accesstoken(consumer_key, consumer_secret) {
     var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     var auth = "Basic " + new Buffer(consumer_key + ":" + consumer_secret).toString("base64");
 
@@ -41,71 +30,112 @@ router.post('/c2b_pay', function (req, res) {
                 console.log('auth error:', error); // Print the error if one occurred
                 console.log('auth statusCode:', response && response.statusCode); // Print the response status code if a response was received
                 console.log('auth body:', result); // Print the HTML for the Google homepage
-                oauth_token = result.access_token;
-                request(
-                    {
-                        method: 'POST',
-                        url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl",
-                        headers: {
-                            "Authorization": "Bearer " + oauth_token
-                        },
-                        json: {
-                            "ShortCode": "602980",
-                            "ResponseType": "Cancelled",
-                            "ConfirmationURL": host + "/api/pay/confirmation?token=esferaagoodcompany@",
-                            "ValidationURL": host + "/api/pay/validation_url?token=esferaagoodcompany@"
-                        }
-                    },
-                    (error, response, body) => {
-                        console.log('register error:', error); // Print the error if one occurred
-                        console.log('register statusCode:', response && response.statusCode); // Print the response status code if a response was received
-                        console.log('register body:', body); // Print the HTML for the Google homepage
-                        if (response.statusCode == 200) {
-                            /* 
-                                {"ConversationID":"","OriginatorCoversationID":"","ResponseDescription":"success"}
-                            */
-                            request(
-                                {
-                                    method: 'POST',
-                                    url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate",
-                                    headers: {
-                                        "Authorization": "Bearer " + oauth_token
-                                    },
-                                    json: {
-                                        "ShortCode": "602980",
-                                        "CommandID": "CustomerBuyGoodsOnline",
-                                        "Amount": parseInt(price),
-                                        "Msisdn": mobilenum,
-                                        "BillRefNumber": nanoid()
-                                    }
-                                },
-                                (error, response, body) => {
-                                    console.log(price);
-                                    console.log(parseInt(price));
-                                    // TODO: Use the body object to extract the response
-                                    console.log(body);
-                                    if (response.statusCode == 200) {
+                return result.access_token;
+            }
+            else {
+                return '';
+            }
+        });
+}
 
-                                        setTimeout(() => {
-                                            res.json({ error: false, result: body, text: 'payment done' });
-                                        }, 15000);
+function registerurl(req, oauth_token) {
+    var host;
+    if (req.secure == true) {
+        host = 'https://' + req.headers.host;
+    }
+    else {
+        host = 'http://' + req.headers.host;
+    }
+    console.log('host:' + host);
 
-                                    }
-                                    else {
-                                        res.json({ error: true, result: body, text: 'Something is wrong,try again later!!' });
-                                    }
-                                }
-                            )
-                        }
-                        else {
-                            res.json({ error: true, result: body });
-                        }
-                    }
-                )
+    request(
+        {
+            method: 'POST',
+            url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl",
+            headers: {
+                "Authorization": "Bearer " + oauth_token
+            },
+            json: {
+                "ShortCode": "602980",
+                "ResponseType": "Cancelled",
+                "ConfirmationURL": host + "/api/pay/confirmation?token=esferaagoodcompany@",
+                "ValidationURL": host + "/api/pay/validation_url?token=esferaagoodcompany@"
+            }
+        },
+        (error, response, body) => {
+            console.log('register error:', error); // Print the error if one occurred
+            console.log('register statusCode:', response && response.statusCode); // Print the response status code if a response was received
+            console.log('register body:', body); // Print the HTML for the Google homepage
+            if (response.statusCode == 200) {
+                /* 
+                    {"ConversationID":"","OriginatorCoversationID":"","ResponseDescription":"success"}
+                */
+                console.log({ error: false, result: body });
+                return { error: false, result: body };
+            }
+            else {
+                console.log({ error: true, result: body });
+                return { error: true, result: body };
+
             }
         }
-    );
+    )
+}
 
+function simulate_c2b(req, oauth_token) {
+    var price = req.body.price;
+    var mobilenum = req.body.mobilenum;
+    var user_id = req.body.user_id;
+    var productlist = req.body.productlist;
+    request(
+        {
+            method: 'POST',
+            url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate",
+            headers: {
+                "Authorization": "Bearer " + oauth_token
+            },
+            json: {
+                "ShortCode": "602980",
+                "CommandID": "CustomerBuyGoodsOnline",
+                "Amount": parseInt(price),
+                "Msisdn": mobilenum,
+                "BillRefNumber": nanoid()
+            }
+        },
+        (error, response, body) => {
+            console.log(price);
+            console.log(parseInt(price));
+            console.log(body);
+            if (response.statusCode == 200) {
+
+                setTimeout(() => {
+                    console.log({ error: false, result: body, text: 'payment done' });
+                    return { error: false, result: body, text: 'payment done' };
+                }, 2000);
+
+            }
+            else {
+                console.log({ error: true, result: body, text: 'Something is wrong,try again later!!' });
+                return { error: true, result: body, text: 'Something is wrong,try again later!!' };
+            }
+        }
+    )
+}
+router.post('/c2b_pay', function (req, res) {
+    var oauth_token = await get_accesstoken(consumer_key, consumer_secret);
+    if (oauth_token != '') {
+        var reg_response = await registerurl(req, oauth_token);
+        if (reg_response.error == false) {
+            var simulate_c2b_res = await simulate_c2b(req, oauth_token);
+            res.json(simulate_c2b);
+        }
+        else {
+            res.json(reg_response);
+        }
+    }
+    else {
+        res.json({ error: true, result: 'authorization failed' });
+    }
 
 });
 router.post('/validation_url', function (req, res) {
