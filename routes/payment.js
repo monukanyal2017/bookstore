@@ -18,7 +18,7 @@ var async=require('async');
 async function get_accesstoken(consumer_key, consumer_secret) {
     var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     var auth = "Basic " + new Buffer(consumer_key + ":" + consumer_secret).toString("base64");
-    request(
+    await request(
         {
             url: url,
             headers: {
@@ -50,7 +50,7 @@ async function get_accesstoken(consumer_key, consumer_secret) {
     }
     console.log('host:' + host);
 
-    request(
+    await request(
         {
             method: 'POST',
             url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl",
@@ -89,7 +89,7 @@ async function get_accesstoken(consumer_key, consumer_secret) {
     var mobilenum = req.body.mobilenum;
     var user_id = req.body.user_id;
     var productlist = req.body.productlist;
-    request(
+    await request(
         {
             method: 'POST',
             url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate",
