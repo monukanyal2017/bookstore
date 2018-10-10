@@ -94,7 +94,8 @@ async function get_accesstoken(consumer_key, consumer_secret) {
     var mobilenum = req.body.mobilenum;
     var user_id = req.body.user_id;
     var productlist = req.body.productlist;
-    await request(
+    return new Promise((resolve, reject)=>{
+     request(
         {
             method: 'POST',
             url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate",
@@ -117,16 +118,16 @@ async function get_accesstoken(consumer_key, consumer_secret) {
 
                 setTimeout(() => {
                     console.log({ error: false, result: body, text: 'payment done' });
-                    return { error: false, result: body, text: 'payment done' };
+                    resolve({ error: false, result: body, text: 'payment done' });
                 }, 2000);
 
             }
             else {
                 console.log({ error: true, result: body, text: 'Something is wrong,try again later!!' });
-                return { error: true, result: body, text: 'Something is wrong,try again later!!' };
+                reject({ error: true, result: body, text: 'Something is wrong,try again later!!' });
             }
-        }
-    )
+        });
+    });
 }
 router.post('/c2b_pay', async (req, res)=>{
     oauth_token = await get_accesstoken(consumer_key, consumer_secret);
