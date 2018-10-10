@@ -14,7 +14,7 @@ router.post('/login', function (req, res) {
   query.exec().then((userdata) => {
 
     if (!userdata) {
-      res.status(201).json({ error: true, result: userdata,text:'Invalid email and password' });
+      res.status(201).json({ error: true, result: userdata, text: 'Invalid email and password' });
     }
     else {
       var token = jwt.sign({ id: userdata._id }, 'supersecret', {
@@ -26,12 +26,12 @@ router.post('/login', function (req, res) {
       obj.email = userdata.email;
       obj.dob = userdata.dob;
       obj.mob = userdata.mob;
-      res.status(200).json({ error: false, result: obj, token: token, token_expire_on: '86400',text:'user found' });
+      res.status(200).json({ error: false, result: obj, token: token, token_expire_on: '86400', text: 'user found' });
     }
 
   }).catch((err) => {
 
-    res.status(400).json({ error: true,result:err,text:'Something is wrong, please try again later!!' });
+    res.status(400).json({ error: true, result: err, text: 'Something is wrong, please try again later!!' });
 
   });
 
@@ -53,13 +53,10 @@ router.post('/genratetoken', function (req, res) {
 });
 
 router.post('/register', function (req, res) {
-  console.log(req.body);
-  //var profilepic=req.files.profilepic;
-
-  //  var destination=path.join('public/uploads/'+req.files.profilepic.name);
-  //   profilepic.mv(destination, function(err) {
-  //     if (err)
-  //       return  res.status(500).json({ status:false,data:err});
+//  var destination=path.join('public/uploads/'+req.files.profilepic.name);
+//   profilepic.mv(destination, function(err) {
+//     if (err)
+//       return  res.status(500).json({ status:false,data:err});
   var newuser = new User();
   newuser.username = req.body.username;
   newuser.email = req.body.email;
@@ -68,9 +65,9 @@ router.post('/register', function (req, res) {
   newuser.mob = req.body.mob;
   //newuser.profileurl=req.files.profilepic.name;
   newuser.save().then((results) => {
-    res.status(200).json({ status: true, data: results,text:'Successfully registered' });
+    res.status(200).json({ status: true, data: results, text: 'Successfully registered' });
   }).catch((err) => {
-    res.status(201).json({ status: false, data: err,text:'User already exist' });
+    res.status(201).json({ status: false, data: err, text: 'User already exist' });
   });
   // });
 });

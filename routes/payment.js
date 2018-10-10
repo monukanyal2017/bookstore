@@ -334,9 +334,16 @@ router.post('/customer_pay', async (req, res)=>{
         console.log('oauth_token:' + oauth_token);
         pcs_response = await process_request(req,shortcode,passkey,oauth_token);
         if (pcs_response.error == false) {
-            res.json(pcs_response);
-            // var simulate_c2b_res = await simulate_c2b(req, oauth_token);
-            // res.json(simulate_c2b_res);
+            
+            UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus':'pending','ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum }, { upsert: true }, function (err, doc) {
+                if (err) {
+                    console.log(err.message);
+                    res.json({error:true,result:err,text:err.message});
+                } else {
+                    res.json(pcs_response);
+                }
+            });
+            //checkoutresponse id store them
         }
         else {
             res.json(pcs_response);
@@ -350,6 +357,28 @@ router.post('/customer_pay', async (req, res)=>{
  router.post('/process_callback', async (req, res)=>{
     console.log('process request callback');
     console.log(req.body);
+    var checkoutid=req.body.Body.stkCallback.CheckoutRequestID;
+    if(req.body.Body.stkCallback.ResultCode!=0)
+    {
+        console.log(req.body.Body.stkCallback.ResultDesc);
+         
+        UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus':'pending','ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum }, { upsert: true }, function (err, doc) {
+            if (err) {
+                console.log(err.message);
+                res.json({error:true,result:err,text:err.message});
+            } else {
+                res.json(pcs_response);
+            }
+        });
+    }
+    else
+    {
+        console.log('done payment received');
+        //sending mail for order confirmation
+        console.log(req.body);
+    }
+
+
  });
 
 module.exports = router;

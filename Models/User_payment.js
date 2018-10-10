@@ -5,6 +5,7 @@ var UserPaymentSchema=new Schema({
     Transaction_id:{type: String ,unique: true,index: true},
     order_detail:{ type : Array , "default" : [] },
     ReceivedAmount:{type: String},
+    paymentstatus:{type:String},
     Receiver_msisdn:{type: String, index: true},
     createdAt: {type: Date,default: Date.now},   
 });
