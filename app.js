@@ -17,7 +17,7 @@ const bodyParser = require('body-parser');
 
 
 // uncomment after placing your favicon in /public
-app.use(favicon(path.join(__dirname, 'public', 'fav.png')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(fileUpload());
 
 app.use(bodyParser.urlencoded({ extended: false }));
