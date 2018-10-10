@@ -88,7 +88,7 @@ router.post('/c2b_pay', function (req, res) {
 
                                         setTimeout(() => {
                                             res.json({ error: false, result: body, text: 'payment done' });
-                                        }, 3000);
+                                        }, 15000);
 
                                     }
                                     else {
