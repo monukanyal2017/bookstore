@@ -53,8 +53,8 @@ async function get_accesstoken(consumer_key, consumer_secret) {
         host = 'http://' + req.headers.host;
     }
     console.log('host:' + host);
-
-    await request(
+    return new Promise((resolve, reject)=>{
+     request(
         {
             method: 'POST',
             url: "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl",
@@ -77,15 +77,16 @@ async function get_accesstoken(consumer_key, consumer_secret) {
                     {"ConversationID":"","OriginatorCoversationID":"","ResponseDescription":"success"}
                 */
                 console.log({ error: false, result: body });
-                return { error: false, result: body };
+                resolve({ error: false, result: body });
             }
             else {
                 console.log({ error: true, result: body });
-                return { error: true, result: body };
+                resolve({ error: true, result: body });
 
             }
-        }
-    )
+        });
+
+    });
 }
 
  async function simulate_c2b(req, oauth_token) {
