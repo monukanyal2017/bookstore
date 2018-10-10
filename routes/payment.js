@@ -7,6 +7,7 @@ var oauth_token;
 var nanoid = require('nanoid');
 var UserPayment = require('../Models/User_payment.js'); //including model
 var prettyjson = require('prettyjson');
+var async=require('async');
 //for api
 
 /***********
