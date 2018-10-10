@@ -296,7 +296,7 @@ async function process_request(req,shortcode,passkey,oauth_token){
     request(
         {
           method: 'POST',
-          url : url,
+          url : "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
           headers : {
             "Authorization" : "Bearer " + oauth_token
           },
