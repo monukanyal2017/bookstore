@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 var request = require('request'),
-    consumer_key = "jKti1AG6g1uM1Wv416FrDyaLcjhYPwAX",
-    consumer_secret = "tWjGkyYzJaZKr50y";
+    consumer_key = "Y8wh33gPGQO0ukxJMlKf5cd8yPGLM5Vy",
+    consumer_secret = "U2Jqz37qzQ4NRgLN";
 var oauth_token;
 var nanoid = require('nanoid');
 var UserPayment = require('../Models/User_payment.js'); //including model
