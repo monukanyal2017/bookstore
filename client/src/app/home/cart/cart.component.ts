@@ -96,7 +96,7 @@ export class CartComponent implements OnInit {
           this.Payservice.paynow(this.Cartservice.getcartlist(),this.fp,this.secondFormGroup.value.mobnum,this.user._id).subscribe((res)=>{
             console.log('pay response'+res);
             this.spinner.hide();
-            this.payresponse=res.result.text;
+            this.payresponse=res.result;
             this.openSnackBar(res.text,null);
             setTimeout(()=>{
               this.thirdbox=true;

@@ -3,13 +3,13 @@ const router = express.Router();
 var request = require('request'),
     consumer_key = "nqmZqR1A11a2NRxSIlXKks1FKgObAgzi",
     consumer_secret = "v5InjE47xUSWUdBI",
-    shortcode="174379",
-    passkey="bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+    shortcode = "174379",
+    passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
 var oauth_token;
 var reg_response;
 var b2c_response;
 var nanoid = require('nanoid');
-var moment=require('moment');
+var moment = require('moment');
 var UserPayment = require('../Models/User_payment.js'); //including model
 var prettyjson = require('prettyjson');
 var async = require('async');
@@ -232,7 +232,7 @@ async function b2c_payment(req, oauth_token) {
             });
     });
 }
-router.get('/b2c', async (req, res)=>{
+router.get('/b2c', async (req, res) => {
 
     oauth_token = await get_accesstoken(consumer_key, consumer_secret);
     if (oauth_token != '') {
@@ -284,7 +284,7 @@ router.post('/b2c/result', function (req, res) {
  * B2C API END*
  *************************************************************/
 
-async function process_request(req,shortcode,passkey,oauth_token){
+async function process_request(req, shortcode, passkey, oauth_token) {
     var host;
     if (req.secure == true) {
         host = 'https://' + req.headers.host;
@@ -293,52 +293,50 @@ async function process_request(req,shortcode,passkey,oauth_token){
         host = 'http://' + req.headers.host;
     }
     return new Promise((resolve, reject) => {
-    request(
-        {
-          method: 'POST',
-          url : "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
-          headers : {
-            "Authorization" : "Bearer " + oauth_token
-          },
-        json : {
-          "BusinessShortCode":shortcode,
-          "Password":new Buffer(shortcode+passkey+moment().format('YYYYMMDDHHmmss')).toString("base64"),
-          "Timestamp":moment().format('YYYYMMDDHHmmss'),
-          "TransactionType": "CustomerPayBillOnline",
-          "Amount": parseInt(req.body.price),
-          "PartyA": req.body.mobilenum,
-          "PartyB": shortcode,
-          "PhoneNumber":req.body.mobilenum,
-          "CallBackURL": host+"/api/pay/process_callback",
-          "AccountReference": "ref test",
-          "TransactionDesc": "product purchase"
-        }
-      },
-        function (error, response, body) {
-          // TODO: Use the body object to extract the response
-          if(response.statusCode==200)
-          {  
-            resolve({error:false,result:body,text:`${body.ResponseDescription}. Please check your phone ${req.body.mobilenum} and enter your M-PESA PIN to finish the process!`});
-          }
-          else
-          {
-            reject({error:true,result:body,text:body.ResponseDescription});
-          } 
-        });
+        request(
+            {
+                method: 'POST',
+                url: "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+                headers: {
+                    "Authorization": "Bearer " + oauth_token
+                },
+                json: {
+                    "BusinessShortCode": shortcode,
+                    "Password": new Buffer(shortcode + passkey + moment().format('YYYYMMDDHHmmss')).toString("base64"),
+                    "Timestamp": moment().format('YYYYMMDDHHmmss'),
+                    "TransactionType": "CustomerPayBillOnline",
+                    "Amount": parseInt(req.body.price),
+                    "PartyA": req.body.mobilenum,
+                    "PartyB": shortcode,
+                    "PhoneNumber": req.body.mobilenum,
+                    "CallBackURL": host + "/api/pay/process_callback",
+                    "AccountReference": "ref test",
+                    "TransactionDesc": "product purchase"
+                }
+            },
+            function (error, response, body) {
+                // TODO: Use the body object to extract the response
+                if (response.statusCode == 200) {
+                    resolve({ error: false, result: body, text: `${body.ResponseDescription}. Please check your phone ${req.body.mobilenum} and enter your M-PESA PIN to finish the process!` });
+                }
+                else {
+                    reject({ error: true, result: body, text: body.ResponseDescription });
+                }
+            });
 
     });
 }
-router.post('/customer_pay', async (req, res)=>{
+router.post('/customer_pay', async (req, res) => {
     oauth_token = await get_accesstoken(consumer_key, consumer_secret);
     if (oauth_token != '') {
         console.log('oauth_token:' + oauth_token);
-        pcs_response = await process_request(req,shortcode,passkey,oauth_token);
+        pcs_response = await process_request(req, shortcode, passkey, oauth_token);
         if (pcs_response.error == false) {
-            
-            UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus':'pending','ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum }, { upsert: true }, function (err, doc) {
+
+            UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'pending', 'ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum }, { upsert: true }, function (err, doc) {
                 if (err) {
                     console.log(err.message);
-                    res.json({error:true,result:err,text:err.message});
+                    res.json({ error: true, result: err, text: err.message });
                 } else {
                     res.json(pcs_response);
                 }
@@ -352,33 +350,36 @@ router.post('/customer_pay', async (req, res)=>{
     else {
         res.json({ error: true, result: 'authorization failed' });
     }
- });
+});
 
- router.post('/process_callback', async (req, res)=>{
+router.post('/process_callback', async (req, res) => {
     console.log('process request callback');
     console.log(req.body);
-    var checkoutid=req.body.Body.stkCallback.CheckoutRequestID;
-    if(req.body.Body.stkCallback.ResultCode!=0)
-    {
+    var checkoutid = req.body.Body.stkCallback.CheckoutRequestID;
+    if (req.body.Body.stkCallback.ResultCode != 0) {
         console.log(req.body.Body.stkCallback.ResultDesc);
-         
-        UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus':'pending','ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum }, { upsert: true }, function (err, doc) {
+        UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'failed' }, { upsert: true }, function (err, doc) {
             if (err) {
                 console.log(err.message);
-                res.json({error:true,result:err,text:err.message});
+                res.json({ error: true, result: err, text: err.message });
             } else {
                 res.json(pcs_response);
             }
         });
     }
-    else
-    {
+    else {
         console.log('done payment received');
         //sending mail for order confirmation
         console.log(req.body);
+        UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'success' }, { upsert: true }, function (err, doc) {
+            if (err) {
+                console.log(err.message);
+                res.json({ error: true, result: err, text: err.message });
+            } else {
+                res.json(pcs_response);
+            }
+        });
     }
-
-
- });
+});
 
 module.exports = router;
