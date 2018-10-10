@@ -318,11 +318,11 @@ async function process_request(req,shortcode,passkey,oauth_token){
           // TODO: Use the body object to extract the response
           if(response.statusCode==200)
           {  
-            resolve({error:false,result:body});
+            resolve({error:false,result:body,text:`${body.ResponseDescription}. Please check your phone ${req.body.mobilenum} and enter your M-PESA PIN to finish the process!`});
           }
           else
           {
-            reject({error:true,result:body});
+            reject({error:true,result:body,text:body.ResponseDescription});
           } 
         });
 
