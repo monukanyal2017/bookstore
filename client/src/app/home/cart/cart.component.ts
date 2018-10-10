@@ -92,7 +92,7 @@ export class CartComponent implements OnInit {
           this.user=JSON.parse(localStorage.getItem('user'));
           this.spinner.show();
           // console.log(this.secondFormGroup.value);
-          this.Payservice.paynow(this.Cartservice.getcartlist(),this.fp,this.secondFormGroup.value.mobnum,this.user._id).subscribe((res)=>{
+          this.Payservice.paynow(this.Cartservice.getcartlist(),this.fp,this.secondFormGroup.value,this.user._id).subscribe((res)=>{
             console.log('pay response'+res);
             this.spinner.hide();
             this.payresponse=res.result;

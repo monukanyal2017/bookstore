@@ -4,9 +4,10 @@ var Schema=mongoose.Schema;
 var UserPaymentSchema=new Schema({
     Transaction_id:{type: String ,unique: true,index: true},
     order_detail:{ type : Array , "default" : [] },
-    ReceivedAmount:{type: String},
+    shipping_details:{ type : Array , "default" : [] },
+    Amount:{type: String},
     paymentstatus:{type:String},
-    Receiver_msisdn:{type: String, index: true},
+    user_id:{type: String},
     createdAt: {type: Date,default: Date.now},   
 });
 

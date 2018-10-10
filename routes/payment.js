@@ -337,9 +337,10 @@ router.post('/customer_pay', async (req, res) => {
             var orderpayment = new UserPayment();
             orderpayment.Transaction_id = pcs_response.result.CheckoutRequestID;
             orderpayment.paymentstatus = 'pending';
-            orderpayment.ReceivedAmount = req.body.price;
-            orderpayment.Receiver_msisdn = req.body.mobilenum;
+            orderpayment.Amount = req.body.price;
+            orderpayment.user_id = req.body.user_id;
             orderpayment.order_detail = req.body.productlist;
+            orderpayment.shipping_detail = req.body.shipping_details;
             orderpayment.save().then((results) => {
                 console.log('doc info');
                 console.log(results);
