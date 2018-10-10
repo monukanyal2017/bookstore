@@ -344,7 +344,7 @@ router.post('/customer_pay', async (req, res) => {
             orderpayment.save().then((results) => {
                 console.log('doc info');
                 console.log(results);
-                User.update({ mob: req.body.mobilenum }, { $push: { UserPayment: results } }, (err) => {
+                User.update({ _id: req.body.user_id }, { $push: { UserPayment: results } }, (err) => {
                     console.log('update user tbl' + err);
                     res.json(pcs_response);
                 });
