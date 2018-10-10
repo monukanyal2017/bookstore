@@ -20,7 +20,7 @@ router.post('/c2b_pay', function (req, res) {
     else {
         host = 'http://' + req.headers.host;
     }
-    console.log('host:'+host);
+    console.log('host:' + host);
     var price = req.body.price;
     var mobilenum = req.body.mobilenum;
     var user_id = req.body.user_id;
@@ -52,8 +52,8 @@ router.post('/c2b_pay', function (req, res) {
                         json: {
                             "ShortCode": "602980",
                             "ResponseType": "Cancelled",
-                            "ConfirmationURL": host + "/api/mpesa/confirmation?token=esferaagoodcompany@",
-                            "ValidationURL": host + "/api/mpesa/validation_url?token=esferaagoodcompany@"
+                            "ConfirmationURL": host + "/api/pay/confirmation?token=esferaagoodcompany@",
+                            "ValidationURL": host + "/api/pay/validation_url?token=esferaagoodcompany@"
                         }
                     },
                     (error, response, body) => {
@@ -127,18 +127,18 @@ router.post('/confirmation', function (req, res) {
     console.log('-----------C2B CONFIRMATION REQUEST------------');
     console.log(prettyjson.render(req.body, options));
     console.log('-----------------------');
-    
+
     var message = {
         "ResultCode": 0,
         "ResultDesc": "Success"
     };
     //or
 
-   /* var message = {
-        "ResultCode": 1,
-        "ResultDesc": "Rejected"
-    };
-    */
+    /* var message = {
+         "ResultCode": 1,
+         "ResultDesc": "Rejected"
+     };
+     */
 
     res.json(message);
 });
@@ -181,8 +181,8 @@ router.get('/b2c', function (req, res) {
                         "PartyA": "602980",
                         "PartyB": "254708374149",
                         "Remarks": "Your bonus",
-                        "QueueTimeOutURL": host + "/api/mpesa/b2c/timeout",
-                        "ResultURL": host + "/api/mpesa/b2c/result",
+                        "QueueTimeOutURL": host + "/api/pay/b2c/timeout",
+                        "ResultURL": host + "/api/pay/b2c/result",
                         "Occasion": "NA"
                     }
                 }, function (error2, response2, body2) {

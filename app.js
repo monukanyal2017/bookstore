@@ -38,7 +38,7 @@ const categories = require('./routes/categories.js');
 
 app.use('/api/', routes);
 app.use('/api/books', Book);
-app.use('/api/mpesa', mpesa);
+app.use('/api/pay', mpesa);
 app.use('/api/categories', categories);
 /*---------routes end---------------------*/
 // Send all other requests to the Angular app
