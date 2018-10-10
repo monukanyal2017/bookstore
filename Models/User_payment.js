@@ -2,7 +2,6 @@ var mongoose=require('mongoose');
 var Schema=mongoose.Schema;
 
 var UserPaymentSchema=new Schema({
-    user_id:{type: String},
     Transaction_id:{type: String ,unique: true,index: true},
     order_detail:{ type : Array , "default" : [] },
     ReceivedAmount:{type: String},

@@ -85,6 +85,7 @@ router.post('/c2b_pay', function (req, res) {
                                     // TODO: Use the body object to extract the response
                                     console.log(body);
                                     if (response.statusCode == 200) {
+
                                         setTimeout(() => {
                                             res.json({ error: false, result: body, text: 'payment done' });
                                         }, 3000);
@@ -126,6 +127,7 @@ router.post('/confirmation', function (req, res) {
     console.log('-----------C2B CONFIRMATION REQUEST------------');
     console.log(prettyjson.render(req.body, options));
     console.log('-----------------------');
+    
     var message = {
         "ResultCode": 0,
         "ResultDesc": "Success"
@@ -188,7 +190,7 @@ router.get('/b2c', function (req, res) {
                     console.log(body2);
                     setTimeout(() => {
                         res.send(body2);
-                    }, 2000);
+                    }, 8000);
 
 
                 });
