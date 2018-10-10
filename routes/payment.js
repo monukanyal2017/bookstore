@@ -30,7 +30,8 @@ function get_accesstoken(consumer_key, consumer_secret) {
                 console.log('auth error:', error); // Print the error if one occurred
                 console.log('auth statusCode:', response && response.statusCode); // Print the response status code if a response was received
                 console.log('auth body:', result); // Print the HTML for the Google homepage
-                return result.access_token;
+                oauth_token=result.access_token;
+                return oauth_token;
             }
             else {
                 return '';
@@ -124,6 +125,7 @@ function get_accesstoken(consumer_key, consumer_secret) {
 router.post('/c2b_pay', async (req, res)=>{
     var oauth_token = await get_accesstoken(consumer_key, consumer_secret);
     if (oauth_token != '') {
+        console.log('oauth_token:'+oauth_token);
         var reg_response = await registerurl(req, oauth_token);
         if (reg_response.error == false) {
             var simulate_c2b_res = await simulate_c2b(req, oauth_token);
