@@ -14,10 +14,11 @@ export class PayService {
     constructor(private http: HttpClient, private router: Router) { 
 
     }
-    paynow(productlist,price,shipping_details,user_id){
+    paynow(productlist,price,shipping_details,user_id,Msisdn){
         console.log('price:'+price);
         console.log('shipping_details:'+shipping_details);
-        let data = 'shipping_details='+shipping_details+'&productlist='+productlist+'&price=' +price + '&user_id='+user_id;
+        console.log('Msisdn'+Msisdn);
+        let data = 'Msisdn='+Msisdn+'&shipping_details='+shipping_details+'&productlist='+productlist+'&price=' +price + '&user_id='+user_id;
         let header = new HttpHeaders().set('content-type', 'application/x-www-form-urlencoded').append('Access-Control-Allow-Origin', '*');
         return this.http.post<any>('/api/pay/customer_pay',data, { observe: 'response', responseType: 'json', headers: header }).pipe(map((res) => { console.log(res.body); return res.body; }));
        // return this.http.post<any>('/api/pay/c2b_pay',data, { observe: 'response', responseType: 'json', headers: header }).pipe(map((res) => { console.log(res.body); return res.body; }));

@@ -7,7 +7,7 @@ var UserPaymentSchema=new Schema({
     shipping_details:{ type : Array , "default" : [] },
     Amount:{type: String},
     paymentstatus:{type:String},
-    user_id:{type: String},
+    Msisdn:{type: String},
     createdAt: {type: Date,default: Date.now},   
 });
 

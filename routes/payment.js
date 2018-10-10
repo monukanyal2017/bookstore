@@ -333,12 +333,12 @@ router.post('/customer_pay', async (req, res) => {
         console.log('oauth_token:' + oauth_token);
         pcs_response = await process_request(req, shortcode, passkey, oauth_token);
         if (pcs_response.error == false) {
-            
+
             var orderpayment = new UserPayment();
             orderpayment.Transaction_id = pcs_response.result.CheckoutRequestID;
             orderpayment.paymentstatus = 'pending';
             orderpayment.Amount = req.body.price;
-            orderpayment.user_id = req.body.user_id;
+            orderpayment.Msisdn = req.body.Msisdn;
             orderpayment.order_detail = req.body.productlist;
             orderpayment.shipping_detail = req.body.shipping_details;
             orderpayment.save().then((results) => {
@@ -379,7 +379,6 @@ router.post('/customer_pay', async (req, res) => {
 router.post('/process_callback', async (req, res) => {
     console.log('process request callback');
     console.log(req.body);
-    var checkoutid = req.body.Body.stkCallback.CheckoutRequestID;
     if (req.body.Body.stkCallback.ResultCode != 0) {
         console.log(req.body.Body.stkCallback.ResultDesc);
         UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'failed' }, { upsert: true }, function (err, doc) {

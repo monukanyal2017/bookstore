@@ -9,7 +9,7 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main.8c8fcf802a259ddecfc0.js",
+        "/main.4ddf7418da6528ff9aaf.js",
         "/polyfills.2f4a59095805af02bd79.js",
         "/runtime.a66f828dca56eeb90e02.js",
         "/styles.47a8bea092fce605f875.css"
@@ -58,8 +58,8 @@
     "/assets/icons/icon-96x96.png": "3cca5216b587ea7afc017ed65ddcfb7b131f4f23",
     "/assets/mpesa.jpg": "def01a5b5ebb52b365382728fbccb16fc6f1b90b",
     "/favicon.ico": "f42b8e9fb60f5c2fe7f3634232a5d46219889148",
-    "/index.html": "aa1392010968d9d2dd1b89121793f590ed621bc6",
-    "/main.8c8fcf802a259ddecfc0.js": "2539fbdc800f54461eec24b08ef7a9a632441b47",
+    "/index.html": "0678ae5be9ee2d4703e75155511c87b50c4884ad",
+    "/main.4ddf7418da6528ff9aaf.js": "07c23ce8fb9cb379240ef721a7596f1f6c6ec8b8",
     "/polyfills.2f4a59095805af02bd79.js": "8949bb1b1e302dda246f6ed9c2da703270360b1f",
     "/runtime.a66f828dca56eeb90e02.js": "078e320cc6fdaf355836c3b1c52b059cdd33fc7e",
     "/styles.47a8bea092fce605f875.css": "efec45014a04337d2cc982af7ae2b00ee8809fad"
