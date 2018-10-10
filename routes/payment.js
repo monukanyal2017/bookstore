@@ -4,6 +4,7 @@ var request = require('request'),
     consumer_key = "nqmZqR1A11a2NRxSIlXKks1FKgObAgzi",
     consumer_secret = "v5InjE47xUSWUdBI";
 var oauth_token;
+var reg_response;
 var nanoid = require('nanoid');
 var UserPayment = require('../Models/User_payment.js'); //including model
 var prettyjson = require('prettyjson');
@@ -123,10 +124,10 @@ async function get_accesstoken(consumer_key, consumer_secret) {
     )
 }
 router.post('/c2b_pay', async (req, res)=>{
-    var oauth_token = await get_accesstoken(consumer_key, consumer_secret);
+    oauth_token = await get_accesstoken(consumer_key, consumer_secret);
     if (oauth_token != '') {
         console.log('oauth_token:'+oauth_token);
-        var reg_response = await registerurl(req, oauth_token);
+        reg_response = await registerurl(req, oauth_token);
         if (reg_response.error == false) {
             var simulate_c2b_res = await simulate_c2b(req, oauth_token);
             res.json(simulate_c2b_res);
