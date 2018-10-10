@@ -38,7 +38,7 @@ function get_accesstoken(consumer_key, consumer_secret) {
         });
 }
 
-function registerurl(req, oauth_token) {
+ function registerurl(req, oauth_token) {
     var host;
     if (req.secure == true) {
         host = 'https://' + req.headers.host;
@@ -82,7 +82,7 @@ function registerurl(req, oauth_token) {
     )
 }
 
-function simulate_c2b(req, oauth_token) {
+ function simulate_c2b(req, oauth_token) {
     var price = req.body.price;
     var mobilenum = req.body.mobilenum;
     var user_id = req.body.user_id;
@@ -121,7 +121,7 @@ function simulate_c2b(req, oauth_token) {
         }
     )
 }
-router.post('/c2b_pay', function (req, res) {
+router.post('/c2b_pay', async (req, res)=>{
     var oauth_token = await get_accesstoken(consumer_key, consumer_secret);
     if (oauth_token != '') {
         var reg_response = await registerurl(req, oauth_token);
