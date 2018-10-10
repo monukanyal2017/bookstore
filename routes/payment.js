@@ -333,7 +333,7 @@ router.post('/customer_pay', async (req, res) => {
         pcs_response = await process_request(req, shortcode, passkey, oauth_token);
         if (pcs_response.error == false) {
 
-            UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'pending', 'ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum }, { upsert: true }, function (err, doc) {
+            UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'pending', 'ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum,order_detail:req.body.productlist }, { upsert: true }, function (err, doc) {
                 if (err) {
                     console.log(err.message);
                     res.json({ error: true, result: err, text: err.message });

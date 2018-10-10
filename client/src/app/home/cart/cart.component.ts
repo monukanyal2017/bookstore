@@ -97,6 +97,7 @@ export class CartComponent implements OnInit {
             this.spinner.hide();
             this.payresponse=res.result;
             this.openSnackBar(res.text,null);
+            this.Cartservice.clear_cart();
             setTimeout(()=>{
               this.thirdbox=true;
               stepper.next();
@@ -125,7 +126,6 @@ export class CartComponent implements OnInit {
 
   back_home(){
     this.thirdbox=false;
-    this.Cartservice.clear_cart();
     this.router.navigate(['/home']);
   }
 }
