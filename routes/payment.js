@@ -13,10 +13,9 @@ var prettyjson = require('prettyjson');
  * C2B API *
  ***********/
 
-function get_accesstoken(consumer_key, consumer_secret) {
+async function get_accesstoken(consumer_key, consumer_secret) {
     var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     var auth = "Basic " + new Buffer(consumer_key + ":" + consumer_secret).toString("base64");
-
     request(
         {
             url: url,
@@ -39,7 +38,7 @@ function get_accesstoken(consumer_key, consumer_secret) {
         });
 }
 
- function registerurl(req, oauth_token) {
+ async function registerurl(req, oauth_token) {
     var host;
     if (req.secure == true) {
         host = 'https://' + req.headers.host;
@@ -83,7 +82,7 @@ function get_accesstoken(consumer_key, consumer_secret) {
     )
 }
 
- function simulate_c2b(req, oauth_token) {
+ async function simulate_c2b(req, oauth_token) {
     var price = req.body.price;
     var mobilenum = req.body.mobilenum;
     var user_id = req.body.user_id;
