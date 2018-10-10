@@ -18,7 +18,8 @@ var async=require('async');
 async function get_accesstoken(consumer_key, consumer_secret) {
     var url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     var auth = "Basic " + new Buffer(consumer_key + ":" + consumer_secret).toString("base64");
-    await request(
+    return new Promise((resolve, reject)=>{
+    request(
         {
             url: url,
             headers: {
@@ -32,12 +33,15 @@ async function get_accesstoken(consumer_key, consumer_secret) {
                 console.log('auth statusCode:', response && response.statusCode); // Print the response status code if a response was received
                 console.log('auth body:', result); // Print the HTML for the Google homepage
                 oauth_token=result.access_token;
-                return oauth_token;
+                //return oauth_token;
+                resolve(oauth_token);
             }
             else {
-                return '';
+               // return '';
+                reject('');
             }
         });
+    });
 }
 
  async function registerurl(req, oauth_token) {
