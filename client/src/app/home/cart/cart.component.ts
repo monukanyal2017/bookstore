@@ -3,7 +3,6 @@ import { CartService } from '../../shared/services/cart.service';
 import { Subscription } from 'rxjs';
 import { Cartarr } from '../../shared/model/cart.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DataSource } from '@angular/cdk/collections';
 import { CartDataSource } from '../../shared/class/cartdatasouce';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatSnackBar, MatStepper } from '@angular/material';
@@ -54,8 +53,8 @@ export class CartComponent implements OnInit {
   }
 
   book_quantity_change(info, index) {
-    console.log(info.target.value);
-    console.log(index);
+    // console.log(info.target.value);
+    // console.log(index);
     this.Cartservice.change_custom_quantity(index, info.target.value);
     this.refresh();
   }
@@ -78,7 +77,7 @@ export class CartComponent implements OnInit {
 
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
-      duration: 2000,
+      duration: 3000,
     });
   }
 
