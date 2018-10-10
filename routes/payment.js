@@ -361,9 +361,9 @@ router.post('/process_callback', async (req, res) => {
         UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'failed' }, { upsert: true }, function (err, doc) {
             if (err) {
                 console.log(err.message);
-                res.json({ error: true, result: err, text: err.message });
+               
             } else {
-                res.json(pcs_response);
+                console.log('record updated err');
             }
         });
     }
@@ -374,9 +374,9 @@ router.post('/process_callback', async (req, res) => {
         UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'success' }, { upsert: true }, function (err, doc) {
             if (err) {
                 console.log(err.message);
-                res.json({ error: true, result: err, text: err.message });
+              
             } else {
-                res.json(pcs_response);
+                console.log('record updated success');
             }
         });
     }
