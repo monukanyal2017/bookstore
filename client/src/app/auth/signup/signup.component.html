@@ -13,8 +13,8 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input type="text" matInput placeholder="Your Mobile Number" ngModel name="mob" pattern="[1-9]{1}[0-9]{9}" required #mobInput="ngModel">
-      <mat-hint align="end">{{ mobInput.value?.length }} / 10</mat-hint>
+      <input type="text" matInput placeholder="Your Mobile Number" ngModel name="mob" pattern="[1-9]{1}[0-9]{11}" required #mobInput="ngModel">
+      <mat-hint align="end">{{ mobInput.value?.length }} / 12</mat-hint>
       <mat-error *ngIf="mobInput.hasError('required')">Field must not be empty.</mat-error>
       <mat-error *ngIf="mobInput.errors?.pattern">Mobile Number is invalid.</mat-error>
     </mat-form-field>
