@@ -81,7 +81,7 @@ async function get_accesstoken(consumer_key, consumer_secret) {
             }
             else {
                 console.log({ error: true, result: body });
-                resolve({ error: true, result: body });
+                reject({ error: true, result: body });
 
             }
         });
