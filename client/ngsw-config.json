@@ -24,12 +24,12 @@
   "dataGroups":[
     {
       "name":"booksapi",
-      "urls":["/api/books"],
+      "urls":["https://peaceful-atoll-16534.herokuapp.com/api/books"],
       "cacheConfig":{
         "strategy":"freshness",
         "maxSize":20,
         "maxAge":"1h",
-        "timeout":"5s"
+        "timeout":"6s"
       }
     }
   ]
