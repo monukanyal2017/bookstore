@@ -335,7 +335,7 @@ router.post('/customer_pay', async (req, res) => {
         pcs_response = await process_request(req, shortcode, passkey, oauth_token);
         if (pcs_response.error == false) {
 
-            var orderpayment = new UserPayment();
+            var orderpayment = new OrderPayment();
             orderpayment.Transaction_id = pcs_response.result.CheckoutRequestID;
             orderpayment.paymentstatus = 'pending';
             orderpayment.Amount = req.body.price;
@@ -345,7 +345,7 @@ router.post('/customer_pay', async (req, res) => {
             orderpayment.save().then((results) => {
                 console.log('doc info');
                 console.log(results);
-                User.update({ _id: req.body.user_id }, { $push: { UserPayment: results } }, (err) => {
+                User.update({ _id: req.body.user_id }, { $push: { OrderPayment: results } }, (err) => {
                     console.log('update user tbl' + err);
                     res.json(pcs_response);
                 });
@@ -369,7 +369,7 @@ router.post('/process_callback', async (req, res) => {
     console.log(req.body);
     if (req.body.Body.stkCallback.ResultCode != 0) {
         console.log(req.body.Body.stkCallback.ResultDesc);
-        UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'failed' }, { upsert: true }, function (err, doc) {
+        OrderPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'failed' }, { upsert: true }, function (err, doc) {
             if (err) {
                 console.log(err.message);
 
@@ -382,7 +382,7 @@ router.post('/process_callback', async (req, res) => {
         console.log('done payment received');
         //sending mail for order confirmation
         console.log(req.body);
-        UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'success' }, { upsert: true }, function (err, doc) {
+        OrderPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'success' }, { upsert: true }, function (err, doc) {
             if (err) {
                 console.log(err.message);
 

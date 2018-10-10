@@ -11,8 +11,8 @@ var UserSchema = new Schema({
     Book: [
         { type: mongoose.Schema.ObjectId, ref: 'Book' }
     ],
-    UserPayment:[
-        { type: mongoose.Schema.ObjectId, ref: 'UserPayment' }
+    OrderPayment:[
+        { type: mongoose.Schema.ObjectId, ref: 'OrderPayment' }
     ],
     ReceiverPayment:[
         { type: mongoose.Schema.ObjectId, ref: 'ReceiverPayment' }
