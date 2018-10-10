@@ -14,6 +14,9 @@ var UserSchema = new Schema({
     UserPayment:[
         { type: mongoose.Schema.ObjectId, ref: 'UserPayment' }
     ],
+    ReceiverPayment:[
+        { type: mongoose.Schema.ObjectId, ref: 'ReceiverPayment' }
+    ],
     createdAt: { type: Date, default: Date.now }
 });
 //UserSchema.index({email: 1, logintype: 1});

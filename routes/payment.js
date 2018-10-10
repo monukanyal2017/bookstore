@@ -10,7 +10,8 @@ var reg_response;
 var b2c_response;
 var nanoid = require('nanoid');
 var moment = require('moment');
-var UserPayment = require('../Models/User_payment.js'); //including model
+var OrderPayment = require('../Models/Order_payment.js'); //including model
+var ReceivePayment = require('../Models/Receiver_payment.js'); //including model
 var User = require('../Models/user.js'); //including model
 var prettyjson = require('prettyjson');
 var async = require('async');
@@ -266,7 +267,7 @@ router.post('/b2c/result', function (req, res) {
 
     var str = req.body.Result.ResultParameters.ResultParameter[4].Value;
     var Msisdn = (str.substring(0, str.indexOf("-"))).trim();
-    UserPayment.findOneAndUpdate({ Transaction_id: req.body.Result.TransactionID }, { 'ReceivedAmount': req.body.Result.ResultParameters.ResultParameter[0].Value, 'Receiver_msisdn': Msisdn }, { upsert: true }, function (err, doc) {
+    ReceiverPayment.findOneAndUpdate({ Transaction_id: req.body.Result.TransactionID }, { 'paymentstatus':'success','ReceivedAmount': req.body.Result.ResultParameters.ResultParameter[0].Value, 'Msisdn': Msisdn }, { upsert: true }, function (err, doc) {
         if (err) {
             console.log(err.message);
         } else {
@@ -340,7 +341,7 @@ router.post('/customer_pay', async (req, res) => {
             orderpayment.Amount = req.body.price;
             orderpayment.Msisdn = req.body.Msisdn;
             orderpayment.order_detail = req.body.productlist;
-            orderpayment.shipping_detail = req.body.shipping_details;
+            orderpayment.shipping_details = req.body.shipping_details;
             orderpayment.save().then((results) => {
                 console.log('doc info');
                 console.log(results);
@@ -352,19 +353,6 @@ router.post('/customer_pay', async (req, res) => {
                 console.log(err.message);
                 res.json({ error: true, result: err, text: err.message });
             });
-            // UserPayment.findOneAndUpdate({ Transaction_id: pcs_response.result.CheckoutRequestID }, { 'paymentstatus': 'pending', 'ReceivedAmount': req.body.price, 'Receiver_msisdn': req.body.mobilenum, order_detail: req.body.productlist }, { upsert: true }, function (err, doc) {
-            //     if (err) {
-            //         console.log(err.message);
-            //         res.json({ error: true, result: err, text: err.message });
-            //     } else {
-            //         console.log('doc info');
-            //         console.log(doc);
-            //         User.update({ mob: req.body.mobilenum }, { $push: { UserPayment: doc } }, (err) => {
-            //             console.log('update user tbl' + err);
-            //             res.json(pcs_response);
-            //         });
-            //     }
-            // });
             //checkoutresponse id store them
         }
         else {

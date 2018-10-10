@@ -87,7 +87,7 @@ export class CartComponent implements OnInit {
     {
       if(this.fp>0)
       {
-        if(this.authService.isLoggedIn)
+        if(this.authService.isLoggedIn()==true)
         {
           this.user=JSON.parse(localStorage.getItem('user'));
           this.spinner.show();
